@@ -6,7 +6,7 @@
 </head>
 <body>
     
-    <canvas id="myCanvas" width="800" height="500"></canvas>
+        <canvas id="myCanvas" width="800" height="500"></canvas>
 
     <canvas id="myCanvas1" width="800" height="500"></canvas>
 
@@ -17,8 +17,16 @@
 </html>
 
 <script src="lchart_a.js">
+    
+
 </script>
 <script>
+    //Xchart.add(1, 2);
+    
+    
+    
+
+    //Xchart.t("myCanvas");
     var barss = {
         labels: ["January", "February", "March", "April", "May", "June", "July", "MM"],
         dataSet: [{
@@ -53,13 +61,12 @@
             fillColor: "rgba(220,0,0,0.9)",
             strokeColor: "rgba(220,0,220,1)",
             data: [65, 59, 90, 81, 56, 55, 40, 90]
-        },
-				{
-				    name: "S3",
-				    fillColor: "rgba(0,187,0,0.9)",
-				    strokeColor: "rgba(151,0,205,1)",
-				    data: [28, 48, 40, 19, 96, 27, 100, 80]
-				}]
+        },{
+      name: "S3",
+      fillColor: "rgba(0,187,0,0.9)",
+      strokeColor: "rgba(151,0,205,1)",
+      data: [28, 48, 40, 19, 96, 27, 100, 80]
+    }]
     };
     //test data end
 
@@ -81,5 +88,6 @@
 
     ];
     Xchart.paintPies("myCanvas2", pieData);
+
 </script>
 

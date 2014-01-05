@@ -2,27 +2,7 @@
     //define a global var
     var Xchart = Xchart || {};
     var cs = cs || {};
-    //test datas
-    var iData = {
-        "label": "s1",
-        "data": [3, 23, 12]
-    }
-    var barChartData = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [
-            {
-                fillColor: "rgba(220,220,220,0.5)",
-                strokeColor: "rgba(220,220,220,1)",
-                data: [65, 59, 90, 81, 56, 55, 40]
-            },
-            {
-                fillColor: "rgba(151,187,205,0.5)",
-                strokeColor: "rgba(151,187,205,1)",
-                data: [28, 48, 40, 19, 96, 27, 100]
-            }
-        ]
-
-    }
+   
     //judge a value is not a number
     var isArray = function (obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
@@ -51,9 +31,10 @@
     
    
     var coodinateSys = function (canvas) {
-        var opt=getCanvasOption(canvas);
+        var opt = getCanvasOption(canvas);
+        cs.opt = opt;
         var coordinateOption = {
-            "basePoint": { "x": 30, "y": opt.height-50 },
+            "basePoint": { "x": 30, "y": opt.height - 50 },
             "horizontalDistance": opt.width,
             "verticalDistance": opt.height
         };
@@ -62,11 +43,11 @@
             "y": coordinateOption.basePoint.y
 
         }
-       
-        cs.hEndPoint = [cs.basePoint.x + coordinateOption.horizontalDistance, cs.basePoint.y];
-        cs.vEndPoint = [cs.basePoint.x, cs.basePoint.y ];
 
-        cs.getBasePoint=function(){
+        cs.hEndPoint = [cs.basePoint.x + coordinateOption.horizontalDistance, cs.basePoint.y];
+        cs.vEndPoint = [cs.basePoint.x, cs.basePoint.y];
+
+        cs.getBasePoint = function () {
             return cs.basePoint;
         }
         cs.getVendPoint = function () {
@@ -81,98 +62,86 @@
                 "y": cs.hEndPoint[1]
             }
         }
-        return cs;
-    }
-    var bars = [{
-                    fillColor: "rgba(220,0,220,0.8)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    data: [65, 59, 90, 81, 56, 55, 40]
-                },{
-                    fillColor: "rgba(151,187,205,0.8)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 96, 27, 100]
-                }, {
-                    fillColor: "rgba(101,147,195,0.8)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    data: [208, 40, 140, 190, 123, 27, 400]
-                }];
+        cs.brush = createBrush(canvas);
+        //return cs;
+    };
+  
 
 
 
-    function paintBar(bu, datasArr) {
+    function paintBar(barDatas) {
+        if (!barDatas) return;
+        var labels=barDatas.labels;
+        var dataArr=barDatas.dataSet;       
+        var bu = cs.brush;
         var rectWidth = 25;
+        var max = dataArr.length;
+        var barSpace = rectWidth * max + 20;
         //get bars count
-        for (var i=0,max= datasArr.length; i < max; i++) {
-            bu.fillStyle = datasArr[i].fillColor;
-            bu.strokeStyle = datasArr[i].strokeColor;
-            var b = datasArr[i].data;
+        for (var i=0; i < max; i++) {
+            bu.fillStyle = dataArr[i].fillColor;
+            bu.strokeStyle = dataArr[i].strokeColor;
+            var b = dataArr[i].data;
             for (var k = 0, m = b.length; k < m; k++) {
-                bu.fillRect((rectWidth + 2) * i + 100 + 100 * k, cs.basePoint.y, rectWidth, -b[k]);
+                bu.fillRect((rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y, rectWidth, -b[k]);
                 bu.font = "15px Arial";
-                bu.fillText(b[k], (rectWidth + 2) * i + 100 + 100 * k, cs.basePoint.y - b[k]);
+                bu.fillText(labels[k], barSpace + k * barSpace, cs.basePoint.y + 20);
+                bu.fillText(b[k], (rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y - b[k]);
             }
+            bu.font = "10px Arial";
+            bu.fillText(dataArr[i].name, cs.opt.width / 2 + 35 * i, cs.basePoint.y + 38);
+            bu.fillRect(cs.opt.width / 2 + 35 * i, cs.basePoint.y + 40, 35, 9);
         }
         
     }
 
-  
 
- 
-   //test data
-    var lines = [{
-                fillColor: "rgba(220,220,220,0.5)",
-                strokeColor: "rgba(220,220,220,1)",
-                data: [65, 59, 90, 81, 56, 55, 40]
-                },
-                {
-                    fillColor: "rgba(151,187,205,0.5)",
-                    strokeColor: "rgba(151,187,205,1)",                 
-                    data: [28, 48, 40, 19, 96, 27, 100]
-                }];
-    //test data end
-
-    function paintLine(bu, datasArr) {
+    function paintLine(lineDatas) {
+        if (!lineDatas) return;
+        var labels = lineDatas.lables;
+        var datasArr = lineDatas.dataSet;
+        var bu = cs.brush;
         for (var i = 0, maxi = datasArr.length; i < maxi; i++) {
             var line = datasArr[i];
+            var space = cs.opt.width / (line.data.length + 1);
+            var bu = cs.brush;
             bu.beginPath();
             bu.moveTo(cs.basePoint.x, cs.basePoint.y);
-            bu.strokeStyle = line.strokeColor;
-            bu.fillStyle = line.fillColor;
+           bu.strokeStyle = line.strokeColor;
+           
             var datas = line.data;
             for (var k = 0, max = datas.length; k < max; k++) {
-                bu.lineTo(100 + k * 100, cs.basePoint.y-datas[k]);
-                bu.fillText(datas[k], 100 + k * 100, cs.basePoint.y - datas[k]);
+                bu.lineTo(space + k * space, cs.basePoint.y - datas[k]);
+                //bu.fillStyle = line.fillColor;
+                bu.fillStyle = line.strokeColor;
+                bu.font = "15px Arial";
+                bu.fillText(labels[k], space + k * space, cs.basePoint.y + 20);
+                bu.fillText(datas[k], space + k * space, cs.basePoint.y - datas[k]);
             }
             bu.stroke();
+            bu.fillStyle = line.strokeColor;
+            bu.font = "10px Arial";
+            bu.fillText(datasArr[i].name, cs.opt.width / 2 + 35 * i, cs.basePoint.y + 38);
+            bu.fillRect(cs.opt.width / 2 + 35 * i, cs.basePoint.y + 40, 35, 9);
+         
         }
 
     }
-    var pieData = [
-              {
-                  value: 30,
-                  color: "#F38630"
-              },
-              {
-                  value: 50,
-                  color: "#E0E4CC"
-              },
-              {
-                  value: 100,
-                  color: "#69D2E7"
-              }
-
-    ];
+ 
 
     function paintPie(pieData) {
-        var canvas = document.getElementById("circle");
-        var ctx = canvas.getContext("2d");
+        var bu = cs.brush;
         var startPoint = 0;
+        var xAxis = cs.opt.width / 2;
+        var yAxis = cs.opt.height / 2;
+        var radius = (xAxis >= yAxis ? yAxis : xAxis);
         for (var i = 0; i < pieData.length; i++) {
-            ctx.fillStyle = pieData[i].color;
-            ctx.beginPath();
-            ctx.moveTo(200, 150);
-            ctx.arc(200, 150, 150, startPoint, startPoint + Math.PI * 2 * (pieData[i].value / 180), false);
-            ctx.fill();
+            bu.fillStyle = pieData[i].color;
+            bu.beginPath();
+            bu.moveTo(xAxis, yAxis);
+            bu.arc(xAxis, yAxis, radius, startPoint, startPoint + Math.PI * 2 * (pieData[i].value / 180), false);
+            bu.fill();
+            //bu.fillText(pieData[i].value, , );
             startPoint += Math.PI * 2 * (pieData[i].value / 180);
         }
     }
@@ -190,38 +159,20 @@
         return canvasOpt;
     }
 
-    function initCoodinateSys(coodSysOption) {
-        var s = coodinateSys();
-        
-        var brush = createBrush(canvasId);
-        //水平直线  x keep the same,y increase
-        brush.strokeStyle = "red";
-        brush.beginPath();
-        brush.moveTo(s.basePoint.x, s.basePoint.y);//指定一条线段的起点 
-        brush.lineTo(s.hEndPoint[0], s.hEndPoint[1]);     //指定一条线段的终点  
-        brush.stroke();
-        //垂直线
-        brush.moveTo(s.basePoint.x, s.basePoint.y);    //指定一条线段的起点
-        brush.lineTo(s.vEndPoint[0], s.vEndPoint[1]);                  //指定一条线段的终点
-        brush.stroke();
-    }
 
-    function testCoo(canvasId) {
-        var s = coodinateSys(canvasId);
-        var brush = createBrush(canvasId);
-        //水平直线  x keep the same,y increase
-        brush.strokeStyle = "red";
+    function initCoordinateSys(canvasId) {
+        coodinateSys(canvasId);        
+        var brush = cs.brush;
+        //x keep the same,y increase
+        brush.strokeStyle = "black";
         brush.beginPath();
-        brush.moveTo(s.basePoint.x,s.basePoint.y);//指定一条线段的起点 
-        brush.lineTo(s.hEndPoint[0], s.hEndPoint[1]);     //指定一条线段的终点  
+        brush.moveTo(cs.basePoint.x, cs.basePoint.y); 
+        brush.lineTo(cs.hEndPoint[0], cs.hEndPoint[1]);     
         brush.stroke();
-        //垂直线
-        brush.moveTo(s.basePoint.x, s.basePoint.y);    //指定一条线段的起点
-        brush.lineTo(s.vEndPoint[0], -s.vEndPoint[1]);                  //指定一条线段的终点
+  
+        brush.moveTo(cs.basePoint.x, cs.basePoint.y);    
+        brush.lineTo(cs.vEndPoint[0], -cs.vEndPoint[1]);  
         brush.stroke();
-        //paintBar(brush);
-        paintBar(brush, bars);
-        paintLine(brush,lines);
     }
   
 
@@ -237,14 +188,22 @@
             paintCoordinate(canvasId);
         },
         t: function (canvasId) {
-            testCoo(canvasId);
+            initCoordinateSys(canvasId);
+        },
+        paintLines: function (canvasId, datas) {
+            initCoordinateSys(canvasId);
+            paintLine(datas);
+        },
+        paintBars: function (canvasId, datas) {
+            initCoordinateSys(canvasId);
+            paintBar(datas);
+        },
+        paintPies: function (canvasId, datas) {
+            initCoordinateSys(canvasId);
+            paintPie(datas);
         }
 
     }
-
-
-
-
 
     window.Xchart = Xchart;
 

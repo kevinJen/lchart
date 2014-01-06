@@ -217,7 +217,7 @@
             paintBar(datas);
         },
         paintPies: function (canvasId, datas) {
-            
+            coodinateSys(canvasId);
             paintPie(datas);
         }
 

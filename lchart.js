@@ -67,9 +67,16 @@
     };
   
 
-
+    function caluteSpace(datas) {
+        var tem=[];
+        for (var i = 0, max = datas.dataSet.length; i < max; i++) {
+            tem = tem.concat(datas.dataSet[i].data);
+        }
+        return caluateMaxValue(tem);
+    }
 
     function paintBar(barDatas) {
+        var ttt=caluteSpace(barDatas);
         if (!barDatas) return;
         var labels=barDatas.labels;
         var dataArr=barDatas.dataSet;       
@@ -83,10 +90,10 @@
             bu.strokeStyle = dataArr[i].strokeColor;
             var b = dataArr[i].data;
             for (var k = 0, m = b.length; k < m; k++) {
-                bu.fillRect((rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y, rectWidth, -b[k]);
+                bu.fillRect((rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y, rectWidth, -b[k]*(Math.abs((cs.basePoint.y-20)/ttt)));
                 bu.font = "15px Arial";
                 bu.fillText(labels[k], barSpace + k * barSpace, cs.basePoint.y + 20);
-                bu.fillText(b[k], (rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y - b[k]);
+                bu.fillText(b[k], (rectWidth + 2) * i + barSpace + barSpace * k, cs.basePoint.y -b[k] * (Math.abs((cs.basePoint.y-20) / ttt)));
             }
             bu.font = "10px Arial";
             bu.fillText(dataArr[i].name, cs.opt.width / 2 + 35 * i, cs.basePoint.y + 38);
@@ -98,7 +105,8 @@
 
     function paintLine(lineDatas) {
         if (!lineDatas) return;
-        var labels = lineDatas.lables;
+        var ttt = caluteSpace(lineDatas);
+        var labels = lineDatas.labels;
         var datasArr = lineDatas.dataSet;
         var bu = cs.brush;
         for (var i = 0, maxi = datasArr.length; i < maxi; i++) {
@@ -111,12 +119,12 @@
            
             var datas = line.data;
             for (var k = 0, max = datas.length; k < max; k++) {
-                bu.lineTo(space + k * space, cs.basePoint.y - datas[k]);
+                bu.lineTo(space + k * space, cs.basePoint.y - datas[k] * (Math.abs((cs.basePoint.y - 20) / ttt)));
                 //bu.fillStyle = line.fillColor;
                 bu.fillStyle = line.strokeColor;
                 bu.font = "15px Arial";
                 bu.fillText(labels[k], space + k * space, cs.basePoint.y + 20);
-                bu.fillText(datas[k], space + k * space, cs.basePoint.y - datas[k]);
+                bu.fillText(datas[k], space + k * space, cs.basePoint.y - datas[k] * (Math.abs((cs.basePoint.y - 20) / ttt)));
             }
             bu.stroke();
             bu.fillStyle = line.strokeColor;
@@ -152,8 +160,18 @@
     function getCanvasOption(canvas) {
         var canvasOpt = canvasOpt || {};
         var canvas = selById(canvas);
-        var width = canvas.width;
-        var height = canvas.height;
+        var width, height;
+        if(canvas.width){
+            width = canvas.width;
+        } else {
+            width = 800;
+        }
+        if (canvas.height) {
+            height = canvas.height;
+        } else {
+            height = 500;
+        }
+       
         canvasOpt.width = width;
         canvasOpt.height = height;
         return canvasOpt;
@@ -199,7 +217,7 @@
             paintBar(datas);
         },
         paintPies: function (canvasId, datas) {
-            initCoordinateSys(canvasId);
+            
             paintPie(datas);
         }
 

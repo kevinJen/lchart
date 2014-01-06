@@ -19,6 +19,7 @@
 <script src="lchart_a.js">
 </script>
 <script>
+ 
     var barss = {
         labels: ["January", "February", "March", "April", "May", "June", "July", "MM"],
         dataSet: [{
@@ -43,27 +44,28 @@
             data: [400, 400, 400, 400, 123, 400, 400]
         }]
     };
-    Xchart.paintBars("myCanvas", barss);
 
-    //test data
-    var lines = {
-        lables: ["January", "February", "March", "April", "May", "June", "July", "MM"],
-        dataSet: [{
+
+    var datas = {
+        labels: ["d1", "d2", "d3", "d4"],
+        dataSet: [
+        {
+            name: "S1",
+            fillColor: "rgba(220,0,220,0.8)",
+            strokeColor: "rgba(220,220,220,1)",
+            data: [3, 34, 21, 4]
+        }, {
+            name: "S2",
+            fillColor: "rgba(151,187,205,0.8)",
+            strokeColor: "rgba(151,187,205,1)",
+            data: [23, 4, 7, 15]
+        }, {
             name: "S3",
-            fillColor: "rgba(220,0,0,0.9)",
-            strokeColor: "rgba(220,0,220,1)",
-            data: [65, 59, 90, 81, 56, 55, 40, 90]
-        },{
-            name: "S3",
-            fillColor: "rgba(0,187,0,0.9)",
-            strokeColor: "rgba(151,0,205,1)",
-            data: [28, 48, 40, 19, 96, 27, 100, 80]
+            fillColor: "rgba(101,147,195,0.8)",
+            strokeColor: "rgba(151,187,205,1)",
+            data: [12, 9, 5, 23]
         }]
-    };
-    //test data end
-
-    Xchart.paintLines("myCanvas1", lines);
-
+    }
     var pieData = [
            {
                value: 30,
@@ -80,6 +82,11 @@
 
     ];
     Xchart.paintPies("myCanvas2", pieData);
+
+
+    Xchart.paintBars("myCanvas", datas);
+
+    Xchart.paintLines("myCanvas1", datas);
 
 </script>
 
